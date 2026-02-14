@@ -14,6 +14,7 @@ import re
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
+from sklearn.decomposition import PCA
 
 
 conn = duckdb.connect('Data/mydb.duckdb')
@@ -44,7 +45,7 @@ tagged_data = [TaggedDocument(words=word_tokenize(doc.lower()),
                doc in enumerate(results["Full_Text"])]
 
 # train the Doc2vec model
-model = Doc2Vec(vector_size=20,
+model = Doc2Vec(vector_size=30,
                 min_count=2, epochs=50)
 model.build_vocab(tagged_data)
 model.train(tagged_data,
@@ -56,25 +57,27 @@ results["Vector"] = [model.infer_vector(
     word_tokenize(doc)) for doc in results["Full_Text"]]
 
 #  print the document vectors
+'''
 for i, doc in enumerate(results["Full_Text"]):
     print("Document", i+1, ":", doc)
     print("Vector:", results["Vector"].iloc[i])
     print()
 
-
+'''
 
 #now using dataset, going to cluster via kmeans
 embedding_df = results['Vector'].apply(pd.Series)
+min_cluster = 2
 def cluster_count(embedding_df, max):
     sil_scores = []
-    for k in range(2,max+1):
+    for k in range(min_cluster,max+1):
         kmeans = KMeans(n_clusters=k,random_state=0)
         cluster_labels = kmeans.fit_predict(embedding_df)
         sil_avg = silhouette_score(embedding_df,cluster_labels)
         sil_scores.append(sil_avg)
     return sil_scores
 
-max_c_count = min(len(embedding_df),5)
+max_c_count = min(len(embedding_df), 100)
 
 silhouette_scores = cluster_count(embedding_df, max_c_count)
 
@@ -82,11 +85,11 @@ optimal_clusters = min(range(len(silhouette_scores)), key=lambda i: abs(silhouet
 
 #performing k means
 
-kmeans = KMeans(n_clusters=optimal_clusters+1, random_state = 0)
+kmeans = KMeans(n_clusters=optimal_clusters+min_cluster, random_state = 0)
 cluster_labels = kmeans.fit_predict(embedding_df)
 
 output_df = pd.DataFrame({'Original Text': results["Full_Text"],'Cluster': cluster_labels})
 
 print(silhouette_scores)
-print(optimal_clusters)
+print(optimal_clusters+min_cluster)
 print(output_df.head())
