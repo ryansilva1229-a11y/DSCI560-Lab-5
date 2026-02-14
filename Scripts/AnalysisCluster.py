@@ -36,7 +36,7 @@ results["Full_Text"] = [lemmatizer.lemmatize(word) for word in results["Full_Tex
 
 stop_words = set(stopwords.words('english'))
 results["Full_Text"] = [word for word in results["Full_Text"] if word not in stop_words]
-print(results["Full_Text"])
+#print(results["Full_Text"])
 
 # preproces the documents, and create TaggedDocuments
 tagged_data = [TaggedDocument(words=word_tokenize(doc.lower()),
@@ -64,12 +64,29 @@ for i, doc in enumerate(results["Full_Text"]):
 
 
 #now using dataset, going to cluster via kmeans
-analysis_df = results[["Full_Text","Vector"]]
-def cluster_count(analysis_df, max):
+embedding_df = results['Vector'].apply(pd.Series)
+def cluster_count(embedding_df, max):
     sil_scores = []
     for k in range(2,max+1):
         kmeans = KMeans(n_clusters=k,random_state=0)
-        cluster_labels = kmeans.fit_predict(analysis_df)
-        sil_avg = silhouette_score(analysis_df,cluster_labels)
+        cluster_labels = kmeans.fit_predict(embedding_df)
+        sil_avg = silhouette_score(embedding_df,cluster_labels)
         sil_scores.append(sil_avg)
     return sil_scores
+
+max_c_count = min(len(embedding_df),5)
+
+silhouette_scores = cluster_count(embedding_df, max_c_count)
+
+optimal_clusters = min(range(len(silhouette_scores)), key=lambda i: abs(silhouette_scores[i] - 1))
+
+#performing k means
+
+kmeans = KMeans(n_clusters=optimal_clusters+1, random_state = 0)
+cluster_labels = kmeans.fit_predict(embedding_df)
+
+output_df = pd.DataFrame({'Original Text': results["Full_Text"],'Cluster': cluster_labels})
+
+print(silhouette_scores)
+print(optimal_clusters)
+print(output_df.head())
