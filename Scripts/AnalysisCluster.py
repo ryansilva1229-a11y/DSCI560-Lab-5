@@ -31,9 +31,9 @@ results["Full_Text"] = results["title"] + " " + results["selftext"]
 results["Full_Text"] = [re.sub(r'[^\w\s]', '', str(x)) for x in results["Full_Text"]]
 #normalize lower case
 results["Full_Text"] = [str(x).lower() for x in results["Full_Text"]]
+results["Full_Text"] = [re.sub(r"https\S*", "", str(x)) for x in results["Full_Text"]]
 
-
-
+results["Full_Text"] = [re.sub(r"\r?\n|\r", " ", str(x)) for x in results["Full_Text"]]
 lemmatizer = WordNetLemmatizer()
 results["Full_Text"] = [lemmatizer.lemmatize(word) for word in results["Full_Text"]]
 
@@ -79,7 +79,7 @@ def cluster_count(embedding_df, max):
         sil_scores.append(sil_avg)
     return sil_scores
 
-max_c_count = min(len(embedding_df), 100)
+max_c_count = min(len(embedding_df), 50)
 
 silhouette_scores = cluster_count(embedding_df, max_c_count)
 
@@ -179,6 +179,9 @@ plt.show()
 for c in labels.unique():
     print(embedding_df[embedding_df["Cluster"]==c].head())
     '''
-
-print_df = embedding_df[["Cluster","text"]]
+embedding_df["subreddit"] = results["subreddit"]
+print_df = embedding_df[["Cluster","subreddit","text"]]
 print_df.to_csv("Data/output.csv")
+print(f"0 cluster count {len(print_df[print_df["Cluster"]==0])}")
+print(f"1 cluster count {len(print_df[print_df["Cluster"]==1])}")
+print(f"total: {len(print_df)}")
