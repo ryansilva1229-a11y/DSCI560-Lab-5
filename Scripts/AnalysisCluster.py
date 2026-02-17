@@ -5,11 +5,8 @@ from gensim.models.doc2vec import Doc2Vec,\
     TaggedDocument
 from nltk.tokenize import word_tokenize
 import nltk
-nltk.download('punkt_tab')
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
-nltk.download('stopwords')
-nltk.download('wordnet')
 import re
 import numpy as np
 from sklearn.cluster import KMeans
@@ -18,6 +15,11 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler, normalize
 from sklearn.feature_extraction.text import TfidfVectorizer
 import matplotlib.pyplot as plt
+import sys
+from sklearn.metrics.pairwise import cosine_similarity
+nltk.download('punkt_tab', quiet=True)
+nltk.download('stopwords', quiet=True)
+nltk.download('wordnet', quiet=True)
 
 conn = duckdb.connect('Data/mydb.duckdb')
 #load into a dataframe
@@ -165,6 +167,10 @@ plt.xlabel("PCA 1")
 plt.ylabel("PCA 2")
 plt.grid(False)
 plt.tight_layout()
+if len(sys.argv) < 3:
+    plt.show()
+else:
+    plt.close()
 '''
 from matplotlib.lines import Line2D
 legend_elems = []
@@ -174,7 +180,7 @@ for lab, idx in label_to_idx.items():
 plt.legend(handles=legend_elems, bbox_to_anchor=(1.05, 1), loc='upper left')
 '''
 
-plt.show()
+#plt.show()
 '''
 for c in labels.unique():
     print(embedding_df[embedding_df["Cluster"]==c].head())
@@ -182,6 +188,36 @@ for c in labels.unique():
 embedding_df["subreddit"] = results["subreddit"]
 print_df = embedding_df[["Cluster","subreddit","text"]]
 print_df.to_csv("Data/output.csv")
-print(f"0 cluster count {len(print_df[print_df["Cluster"]==0])}")
-print(f"1 cluster count {len(print_df[print_df["Cluster"]==1])}")
+print(f"0 cluster count {len(print_df[print_df['Cluster']==0])}")
+print(f"1 cluster count {len(print_df[print_df['Cluster']==1])}")
 print(f"total: {len(print_df)}")
+
+# -----------------------------------------------------
+if len(sys.argv) >= 3 and sys.argv[1] == "--query":
+    user_input = sys.argv[2]
+
+    user_tokens = word_tokenize(user_input.lower())
+    user_vec = model.infer_vector(user_tokens)
+
+    vectors_all = np.array(results["Vector"].tolist())
+    sims = cosine_similarity([user_vec], vectors_all)[0]
+    top_idx = np.argsort(sims)[-5:]
+
+    best_cluster = embedding_df["Cluster"].iloc[top_idx[-1]]
+    cluster_docs = embedding_df[embedding_df["Cluster"] == best_cluster]
+
+    print(f"Closest cluster: {best_cluster}")
+    print(f"Top keyword: {top_keyword.get(best_cluster, '')}")
+    print(f"\nMessages from cluster {best_cluster}:\n")
+    for i, text in enumerate(cluster_docs["text"].head(5), 1):
+        print(f"{i}. {text[:200]}\n")
+
+    plt.figure(figsize=(10, 7))
+    plt.scatter(X_2d[:,0], X_2d[:,1], c='lightgrey', s=10, alpha=0.4)
+    cluster_mask = embedding_df["Cluster"] == best_cluster
+    plt.scatter(X_2d[cluster_mask.values, 0], X_2d[cluster_mask.values, 1], c='red', s=30, alpha=0.8)
+    plt.title(f"Query: '{user_input}' — Matched Cluster {best_cluster}")
+    plt.xlabel("PCA 1")
+    plt.ylabel("PCA 2")
+    plt.tight_layout()
+    plt.show()
