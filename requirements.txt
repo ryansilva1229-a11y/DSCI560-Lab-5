@@ -1,0 +1,8 @@
+requests
+duckdb
+pandas
+numpy
+gensim
+nltk
+scikit-learn
+matplotlib
