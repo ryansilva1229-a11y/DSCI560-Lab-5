@@ -50,3 +50,11 @@ Commands:
 - skip: wait for the next update cycle
 - exit: stop the script
 
+## What It Does
+1. Scrapes posts from the specified subreddit and stores them in a DuckDB database
+2. Preprocesses text (removes punctuation, URLs, stopwords, lemmatizes)
+3. Trains a Doc2Vec model and generates document embeddings
+4. Clusters documents using KMeans with optimal cluster count determined by silhouette score
+5. Displays a PCA scatter plot with cluster keywords labeled
+6. Enters the interactive query mode between update cycles
+
