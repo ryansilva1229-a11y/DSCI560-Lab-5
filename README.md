@@ -4,6 +4,9 @@
 **Team Number:**  17
 
 ## Folder Structure
+
+bash
+```
 DSCI560-Lab-5/
 ├── Data/
 │   └── mydb.duckdb
@@ -12,7 +15,7 @@ DSCI560-Lab-5/
 │   ├── analysisCluster.py
 │   └── automation.py
 └── requirements.txt
-
+```
 
 ## Requirements
 ### Install dependencies with:
