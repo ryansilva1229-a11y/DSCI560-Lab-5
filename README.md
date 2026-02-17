@@ -16,7 +16,9 @@ DSCI560-Lab-5/
 
 ## Requirements
 ### Install dependencies with:
+```
 pip install -r requirements.txt
+```
 
 ## Scripts
 - Scripts/automation.py —  encompassing script, runs the full pipeline.
@@ -25,11 +27,13 @@ pip install -r requirements.txt
 
 ## How to Run
 Run from the project root (DSCI560-Lab-5/):
+```
 python3 Scripts/automation.py <interval_minutes> <subreddit> <num_posts>
-
+```
 Example:
+```
 python3 Scripts/automation.py 5 cybersecurity 1000
-
+```
 - interval_minutes: how often to scrape and re-cluster
 - subreddit: the subreddit to scrape 
 - num_posts: number of posts to fetch per cycle 
