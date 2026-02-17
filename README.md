@@ -34,7 +34,7 @@ python3 Scripts/automation.py 5 cybersecurity 1000
 - subreddit: the subreddit to scrape 
 - num_posts: number of posts to fetch per cycle 
 
-# Interactive Query Mode
+## Interactive Query Mode
 While the script is waiting between updates, you can type a keyword or message to find the closest matching cluster. The matching cluster's messages will be printed and a plot will be displayed highlighting that cluster.
 
 Commands:
