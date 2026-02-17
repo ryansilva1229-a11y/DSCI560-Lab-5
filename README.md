@@ -14,6 +14,7 @@ DSCI560-Lab-5/
 ├── Scripts/
 │   ├── scrapeReddit.py
 │   ├── analysisCluster.py
+│   ├── duckdbInterface.py
 │   └── automation.py
 └── requirements.txt
 ```
