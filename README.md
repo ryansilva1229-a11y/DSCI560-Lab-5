@@ -29,6 +29,7 @@ pip install -r requirements.txt
 - Scripts/automation.py —  encompassing script, runs the full pipeline.
 - Scripts/scrapeReddit.py — scrapes Reddit and stores posts in DuckDB. 
 - Scripts/analysisCluster.py — preprocesses text, trains Doc2Vec, clusters with KMeans, and plots results.
+- Scripts/duckdbInterface.py - connects to the DuckDB database and prints the first 5 rows of REDDIT_DATA (for testing purposes)
 
 ## Building the Database
 Before running the automation script, you need to populate the database by scraping subreddits. Run from the project root (DSCI560-Lab-5/):
