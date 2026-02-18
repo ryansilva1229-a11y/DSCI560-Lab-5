@@ -31,7 +31,7 @@ pip install -r requirements.txt
 - Scripts/analysisCluster.py — preprocesses text, trains Doc2Vec, clusters with KMeans, and plots results.
 
 ## Building the Database
-Before running the automation script, you need to populate the database by scraping subreddits. Run from the project root(DSCI560-Lab-5/):
+Before running the automation script, you need to populate the database by scraping subreddits. Run from the project root (DSCI560-Lab-5/):
 ```
 python3 Scripts/scrapeReddit.py <subreddit> <num_posts>
 ```
