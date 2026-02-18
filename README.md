@@ -62,9 +62,10 @@ Commands:
 - exit: stop the script
 
 ## What It Does
-1. Preprocesses text (removes punctuation, URLs, stopwords, lemmatizes)
-2. Trains a Doc2Vec model and generates document embeddings
-3. Clusters documents using KMeans with optimal cluster count determined by silhouette score
-4. Displays a PCA scatter plot with cluster keywords labeled
-5. Enters the interactive query mode between update cycles
+1. Scrapes new data and reruns analysis at the start of every cycle
+2. Preprocesses text (removes punctuation, URLs, stopwords, lemmatizes)
+3. Trains a Doc2Vec model and generates document embeddings
+4. Clusters documents using KMeans with optimal cluster count determined by silhouette score
+5. Displays a PCA scatter plot with cluster keywords labeled
+6. Enters the interactive query mode between update cycles
 
