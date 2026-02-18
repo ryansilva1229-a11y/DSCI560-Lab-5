@@ -30,8 +30,19 @@ pip install -r requirements.txt
 - Scripts/scrapeReddit.py — scrapes Reddit and stores posts in DuckDB. 
 - Scripts/analysisCluster.py — preprocesses text, trains Doc2Vec, clusters with KMeans, and plots results.
 
+## Building the Database
+Before running the automation script, you need to populate the database by scraping subreddits. Run from the project root(DSCI560-Lab-5/):
+```
+python3 Scripts/scrapeReddit.py <subreddit> <num_posts>
+```
+Example:
+```
+python3 Scripts/scrapeReddit.py cybersecurity 500
+```
+You can run this multiple times with different subreddits to combine data in the same database. The database file will be created at Data/mydb.duckdb. 
+
 ## How to Run
-Run from the project root (DSCI560-Lab-5/):
+Once the database has been populated, run the automation script from the project root (DSCI560-Lab-5/):
 ```
 python3 Scripts/automation.py <interval_minutes> 
 ```
@@ -50,10 +61,9 @@ Commands:
 - exit: stop the script
 
 ## What It Does
-1. Scrapes posts from Reddit and stores them in a DuckDB database
-2. Preprocesses text (removes punctuation, URLs, stopwords, lemmatizes)
-3. Trains a Doc2Vec model and generates document embeddings
-4. Clusters documents using KMeans with optimal cluster count determined by silhouette score
-5. Displays a PCA scatter plot with cluster keywords labeled
-6. Enters the interactive query mode between update cycles
+1. Preprocesses text (removes punctuation, URLs, stopwords, lemmatizes)
+2. Trains a Doc2Vec model and generates document embeddings
+3. Clusters documents using KMeans with optimal cluster count determined by silhouette score
+4. Displays a PCA scatter plot with cluster keywords labeled
+5. Enters the interactive query mode between update cycles
 
